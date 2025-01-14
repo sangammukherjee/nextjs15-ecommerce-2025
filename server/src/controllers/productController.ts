@@ -115,10 +115,11 @@ export const updateProduct = async (
       colors,
       price,
       stock,
-      soldCount,
       rating,
-      images,
     } = req.body;
+
+    console.log(req.body, "req.body");
+
     //homework -> you can also implement image update func
 
     const product = await prisma.product.update({
@@ -133,8 +134,6 @@ export const updateProduct = async (
         colors: colors.split(","),
         price: parseFloat(price),
         stock: parseInt(stock),
-        images,
-        soldCount: parseInt(soldCount),
         rating: parseInt(rating),
       },
     });

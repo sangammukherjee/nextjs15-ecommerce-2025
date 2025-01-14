@@ -52,7 +52,6 @@ export const protectSignUpAction = async (email: string) => {
 export const protectSignInAction = async (email: string) => {
   const req = await request();
   const decision = await protectLoginRules.protect(req, { email });
-  console.log(decision.ip, "ip");
 
   if (decision.isDenied()) {
     if (decision.reason.isEmail()) {
@@ -77,6 +76,12 @@ export const protectSignInAction = async (email: string) => {
           status: 403,
         };
       }
+    } else if (decision.reason.isRateLimit()) {
+      return {
+        error: "Too many requests! Please try again later",
+        success: false,
+        status: 403,
+      };
     }
   }
 

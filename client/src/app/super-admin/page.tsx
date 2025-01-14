@@ -1,5 +1,7 @@
+import SuperAdminProductListingPage from "./products/list/page";
+
 function SuperAdmin() {
-  return <div>SuperAdminproductListingPage</div>;
+  return <SuperAdminProductListingPage />;
 }
 
 export default SuperAdmin;

@@ -24,14 +24,14 @@ interface ProductState {
   error: string | null;
   fetchAllProductsForAdmin: () => Promise<void>;
   createProduct: (productData: FormData) => Promise<Product>;
-  updateProduct: (id: string, productData: FormData) => Promise<void>;
-  deleteProduct: (id: string) => Promise<void>;
-  getProductById?: (id: string) => Promise<Product | null>;
+  updateProduct: (id: string, productData: FormData) => Promise<Product>;
+  deleteProduct: (id: string) => Promise<boolean>;
+  getProductById: (id: string) => Promise<Product | null>;
 }
 
 export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
-  isLoading: false,
+  isLoading: true,
   error: null,
   fetchAllProductsForAdmin: async () => {
     set({ isLoading: true, error: null });
@@ -70,13 +70,18 @@ export const useProductStore = create<ProductState>((set, get) => ({
   updateProduct: async (id: string, productData: FormData) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.put(`${API_ROUTES.PRODUCTS}/${id}`, productData, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.put(
+        `${API_ROUTES.PRODUCTS}/${id}`,
+        productData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       set({ isLoading: false });
+      return response.data;
     } catch (e) {
       set({ error: "Failed to create product", isLoading: false });
     }
@@ -84,10 +89,11 @@ export const useProductStore = create<ProductState>((set, get) => ({
   deleteProduct: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      await axios.delete(`${API_ROUTES.PRODUCTS}/${id}`, {
+      const response = await axios.delete(`${API_ROUTES.PRODUCTS}/${id}`, {
         withCredentials: true,
       });
       set({ isLoading: false });
+      return response.data.success;
     } catch (e) {
       set({ error: "Failed to create product", isLoading: false });
     }
@@ -102,6 +108,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
       return response.data;
     } catch (e) {
       set({ error: "Failed to create product", isLoading: false });
+      return null;
     }
   },
 }));
