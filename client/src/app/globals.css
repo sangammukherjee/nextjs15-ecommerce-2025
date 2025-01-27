@@ -70,3 +70,14 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+body::-webkit-scrollbar {
+  @apply w-[7px];
+}
+body::-webkit-scrollbar-track {
+  @apply shadow-[inset_0_0_6px_rgba(0,0,0,0.3)];
+}
+body::-webkit-scrollbar-thumb {
+  @apply bg-[darkgrey];
+  outline: 1px solid slategrey;
+}

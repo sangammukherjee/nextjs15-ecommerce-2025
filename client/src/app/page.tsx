@@ -1,101 +1,184 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { Button } from "@/components/ui/button";
+import { useSettingsStore } from "@/store/useSettingsStore";
+import { useEffect, useState } from "react";
+
+const gridItems = [
+  {
+    title: "WOMEN",
+    subtitle: "From world's top designer",
+    image:
+      "https://images.unsplash.com/photo-1614251056216-f748f76cd228?q=80&w=1974&auto=format&fit=crop",
+  },
+  {
+    title: "FALL LEGENDS",
+    subtitle: "Timeless cool weather",
+    image:
+      "https://avon-demo.myshopify.com/cdn/shop/files/demo1-winter1_600x.png?v=1733380268",
+  },
+  {
+    title: "ACCESSORIES",
+    subtitle: "Everything you need",
+    image:
+      "https://avon-demo.myshopify.com/cdn/shop/files/demo1-winter4_600x.png?v=1733380275",
+  },
+  {
+    title: "HOLIDAY SPARKLE EDIT",
+    subtitle: "Party season ready",
+    image:
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1974&auto=format&fit=crop",
+  },
+];
+
+function HomePage() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const { banners, featuredProducts, fetchFeaturedProducts, fetchBanners } =
+    useSettingsStore();
+
+  useEffect(() => {
+    fetchBanners();
+    fetchFeaturedProducts();
+  }, [fetchBanners, fetchFeaturedProducts]);
+
+  useEffect(() => {
+    const bannerTimer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 5000);
+
+    return () => clearInterval(bannerTimer);
+  }, [banners.length]);
+
+  console.log(banners, featuredProducts);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-white">
+      <section className="relative h-[600px] overflow-hidden">
+        {banners.map((bannerItem, index) => (
+          <div
+            className={`absolute inset-0 transition-opacity duration-1000 ${
+              currentSlide === index ? "opacity-100" : "opacity-0"
+            }`}
+            key={bannerItem.id}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <div className="absolute inset-0">
+              <img
+                src={bannerItem.imageUrl}
+                alt={`Banner ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-20" />
+            </div>
+            <div className="relative h-full container mx-auto px-4 flex items-center">
+              <div className="text-white space-y-6">
+                <span className="text-sm uppercase tracking-wider">
+                  I AM JOHN
+                </span>
+                <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+                  BEST SELLING
+                  <br />
+                  E-COMMERCE WEBSITE
+                </h1>
+                <p className="text-lg">
+                  A Creative, Flexible , Clean, Easy to use and
+                  <br />
+                  High Performance E-Commerce Theme
+                </p>
+                <Button className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-lg">
+                  SHOP NOW
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                currentSlide === index
+                  ? "bg-white w-6"
+                  : "bg-white/50 hover:bg-white/75"
+              }`}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* grid section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-center text-3xl font-semibold mb-2">
+            THE WINTER EDIT
+          </h2>
+          <p className="text-center text-gray-500 mb-8">
+            Designed to keep your satisfaction and warmth
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {gridItems.map((gridItem, index) => (
+              <div key={index} className="relative group overflow-hidden">
+                <div className="aspect-[3/4]">
+                  <img
+                    src={gridItem.image}
+                    alt={gridItem.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="text-center text-white p-4">
+                    <h3 className="text-xl font-semibold mb-2">
+                      {gridItem.title}
+                    </h3>
+                    <p className="text-sm">{gridItem.subtitle}</p>
+                    <Button className="mt-4 bg-white text-black hover:bg-gray-100">
+                      SHOP NOW
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Feature products section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-center text-3xl font-semibold mb-2">
+            NEW ARRIVALS
+          </h2>
+          <p className="text-center text-gray-500 mb-8">
+            Shop our new arrivals from established brands
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {featuredProducts.map((productItem, index) => (
+              <div key={index} className="relative group overflow-hidden">
+                <div className="aspect-[3/4]">
+                  <img
+                    src={productItem.images[0]}
+                    alt={productItem.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="text-center text-white p-4">
+                    <h3 className="text-xl font-semibold mb-2">
+                      {productItem.name}
+                    </h3>
+                    <p className="text-sm">{productItem.price}</p>
+                    <Button className="mt-4 bg-white text-black hover:bg-gray-100">
+                      QUICK ViEW
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
+
+export default HomePage;

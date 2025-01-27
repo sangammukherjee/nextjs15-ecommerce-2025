@@ -8,10 +8,10 @@ import {
 
 const router = express.Router();
 
-router.use(authenticateJwt, isSuperAdmin);
+router.use(authenticateJwt);
 
 router.get("/fetch-all-coupons", fetchAllCoupons);
-router.post("/create-coupon", createCoupon);
-router.delete("/:id", deleteCoupon);
+router.post("/create-coupon", isSuperAdmin, createCoupon);
+router.delete("/:id", isSuperAdmin, deleteCoupon);
 
 export default router;
